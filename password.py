@@ -27,7 +27,8 @@ btn_2 = Button(
     width='22',
     padx='0',
     pady='0',
-    font=('Times Roman', 12, 'bold')
+    font=('Times Roman', 12, 'bold'),
+    command=lambda: List_of_users()
 )
 
 btn_3 = Button(
@@ -110,11 +111,12 @@ btn_10 = Button(
     width='22',
     padx='0',
     pady='0',
-    font=('Times Roman', 12, 'bold')
+    font=('Times Roman', 12, 'bold'),
+    command=lambda: Login()
 )
 
 btn_11 = Button(
-    text='Ограничения на пароль',
+    text='Правила',
     background=config['btn_color_1'],
     activebackground=config['btn_color_2'],
     width='22',
@@ -175,6 +177,57 @@ btn_16 = Button(
     command=lambda: Login()
 )
 
+btn_17 = Button(
+    text='правила',
+    background='#EE82EE',
+    activebackground='#EE82EE',
+    width='22',
+    padx='0',
+    pady='0',
+    font=('Times Roman', 12, 'bold'),
+)
+
+btn_18 = Button(
+    text='создать',
+    background='#00CED1',
+    activebackground='#00CED1',
+    width='22',
+    padx='0',
+    pady='0',
+    font=('Times Roman', 12, 'bold'),
+)
+
+btn_19 = Button(
+    text='выход',
+    background='#00CED1',
+    activebackground='#00CED1',
+    width='22',
+    padx='0',
+    pady='0',
+    font=('Times Roman', 12, 'bold'),
+)
+
+btn_20 = Button(
+    text='сохранить',
+    background='#00CED1',
+    activebackground='#00CED1',
+    width='22',
+    padx='0',
+    pady='0',
+    font=('Times Roman', 12, 'bold'),
+)
+
+btn_21 = Button(
+    text='выход',
+    background='#00CED1',
+    activebackground='#00CED1',
+    width='22',
+    padx='0',
+    pady='0',
+    font=('Times Roman', 12, 'bold'),
+    command=lambda: Login()
+)
+
 txt_1 = Entry(window, width=10)
 
 txt_2 = Entry(window, width=10)
@@ -187,7 +240,37 @@ txt_5 = Entry(window, width=10)
 
 txt_6 = Entry(window, width=10)
 
-chk = Checkbutton(window, text='Заблокировать пользователя',
+chk_1 = Checkbutton(window, text='Заблокировать пользователя',
+    background=('#00FF7F'),
+    activebackground=('#00FF7F'),
+)
+
+chk_2 = Checkbutton(window, text='',                                # правило 1
+    background=('#00FF7F'),
+    activebackground=('#00FF7F')
+)
+
+chk_3 = Checkbutton(window, text='',                                # правило 2
+    background=('#00FF7F'),
+    activebackground=('#00FF7F')
+)
+
+chk_4 = Checkbutton(window, text='',                                # правило 3
+    background=('#00FF7F'),
+    activebackground=('#00FF7F')
+)
+
+chk_5 = Checkbutton(window, text='',                                # правило 4
+    background=('#00FF7F'),
+    activebackground=('#00FF7F')
+)
+
+chk_6 = Checkbutton(window, text='',                                # правило 5
+    background=('#00FF7F'),
+    activebackground=('#00FF7F')
+)
+
+chk_7 = Checkbutton(window, text='',                                # правило 6
     background=('#00FF7F'),
     activebackground=('#00FF7F')
 )
@@ -270,6 +353,61 @@ lbl_10=Label(text='пароль:',
     fg='black'
 )
 
+lbl_11=Label(text='статус',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15, 'bold'),
+    fg='red'
+)
+
+lbl_12=Label(text='правило 1:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+lbl_13=Label(text='правило 2:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+lbl_14=Label(text='правило 3:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+lbl_15=Label(text='правило 4:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+lbl_16=Label(text='правило 5:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+lbl_17=Label(text='правило 6:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
 
 def Login():
     window.geometry('415x255')              
@@ -295,6 +433,28 @@ def Login():
     btn_15.place_forget()
     lbl_8.place_forget()
     btn_16.place_forget()
+    txt_1.place_forget()
+    btn_6.place_forget()
+    btn_7.place_forget()
+    btn_8.place_forget()
+    btn_9.place_forget()
+    btn_10.place_forget()
+    btn_11.place_forget()
+    chk_1.place_forget()
+    lbl_12.place_forget()
+    lbl_13.place_forget()
+    lbl_14.place_forget()
+    lbl_15.place_forget()
+    lbl_16.place_forget()
+    lbl_17.place_forget()
+    chk_2.place_forget()
+    chk_3.place_forget()
+    chk_4.place_forget()
+    chk_5.place_forget()
+    chk_6.place_forget()
+    chk_7.place_forget()
+    btn_20.place_forget()
+    btn_21.place_forget()
 
 def Admin_Mode():
     window.geometry('415x255')              
@@ -306,7 +466,7 @@ def Admin_Mode():
     btn_4.place(height=32, width=150, x = 20, y = 200)              # о программе
     btn_5.place(height=32, width=150, x = 240, y = 200)             # выход       
 
-def Add_user():                                                    
+def List_of_users():                                                    
     print('HEllO')
     window.geometry('415x255')              
     window.configure(bg = '#00FF7F')                                # задаем цвет окна
@@ -314,11 +474,16 @@ def Add_user():
     txt_1.place(height=30, width=150, x = 10, y = 15)               
     btn_6.place(height=32, width=120, x = 170, y = 15)              # предыдущий
     btn_7.place(height=32, width=110, x = 290, y = 15)              # следующий
-    btn_8.place(height=32, width=220, x = 95, y = 150)              # удалить пользователя
-    btn_9.place(height=30, width=120, x = 80, y = 210)              # сохранить
-    btn_10.place(height=30, width=120, x = 210, y = 210)            # отмена
-    btn_11.place(height=30, width=230, x = 90, y = 90)              # ограничения на пароль
-    chk.place(height=20, width=180, x = 10, y = 50)                 # виджет кнопки
+    btn_8.place(height=32, width=220, x = 95, y = 90)              # удалить пользователя
+    btn_9.place(height=30, width=120, x = 80, y = 150)              # сохранить
+    btn_10.place(height=30, width=120, x = 210, y = 150)            # отмена
+    btn_11.place(height=30, width=120, x = 145, y = 210)             # правила
+    chk_1.place(height=20, width=180, x = 10, y = 50)                 # виджет кнопки
+    btn_1.place_forget()
+    btn_2.place_forget()
+    btn_3.place_forget()
+    btn_4.place_forget()
+    btn_5.place_forget()
 
 def Author():
     print('HEllO')
@@ -352,15 +517,42 @@ def add_user():
     window.geometry('415x255')              
     window.configure(bg = '#00FF7F')           
     window.title('Добавление пользователя')  
-    lbl_9.place(height=25, width=200, x = 10, y = 20)
-    lbl_10.place(height=25, width=250, x = 10, y = 50)
-    txt_5.place(height=25, width=300, x = 80, y = 20)
-    txt_6.place(height=25, width=300, x = 20, y = 50)
-#add_user()
-user()
-#Author()
-#Admin_Mode()
-#Input()
-#Add_user()
+    lbl_9.place(height=25, width=170, x = 35, y = 39)               # имя пользователя
+    lbl_10.place(height=25, width=80, x = 130, y = 79)              # пароль
+    txt_5.place(height=25, width=160, x = 215, y = 40)              # форма для заполнения имени пользователя
+    txt_6.place(height=25, width=160, x = 215, y = 80)              # форма для заполнения пароля
+    btn_17.place(height=25, width=100, x = 147, y = 150)            # правила
+    btn_18.place(height=25, width=100, x = 90, y = 190)             # создать
+    btn_19.place(height=25, width=100, x = 210, y = 190)            # выход
+    lbl_11.place(height=25, width=100, x = 150, y = 115)            # статус
+
+def restrictions():
+    print('HELLO')
+    window.geometry('415x255')              
+    window.configure(bg = '#00FF7F')           
+    window.title('правила')
+    lbl_12.place(height=20, width=100, x = 140, y = 15)              # правило 1
+    lbl_13.place(height=20, width=100, x = 140, y = 45)              # правило 2
+    lbl_14.place(height=20, width=100, x = 140, y = 75)              # правило 3
+    lbl_15.place(height=20, width=100, x = 140, y = 105)              # правило 4
+    lbl_16.place(height=20, width=100, x = 140, y = 135)              # правило 5
+    lbl_17.place(height=20, width=100, x = 140, y = 165)              # правило 6
+    chk_2.place(height=20, width=20, x = 250, y = 17)
+    chk_3.place(height=20, width=20, x = 250, y = 47)
+    chk_4.place(height=20, width=20, x = 250, y = 77)
+    chk_5.place(height=20, width=20, x = 250, y = 107)
+    chk_6.place(height=20, width=20, x = 250, y = 137)
+    chk_7.place(height=20, width=20, x = 250, y = 167)
+    btn_20.place(height=30, width=120, x = 70, y = 205)                 # сохранить
+    btn_21.place(height=30, width=120, x = 215, y = 205)                 # выход
+
+# add_user()
+# user()
+# Author()
+Admin_Mode()
+# Login()
+#List_of_users()
+# change()
+#restrictions()
 
 mainloop()
