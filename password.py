@@ -1,12 +1,16 @@
 from cProfile import label
 from tkinter import*
 from turtle import clear
+from xmlrpc.client import Boolean
+from core import *
 
 config = {
     'btn_color_1': '#FA8072',                           # Цвет кнопок в обычном состоянии (добавить пользователя, Список имен пользователей, Изменить пароль)
     'btn_color_2': '#FA8072',                           # Цвет кнопок в наведенном состоянии (добавить пользователя, Список имен пользователей, Изменить пароль)
     'btn_color_3': '#AFEEEE'                            # Цвет кнопок в обычном состоянии ()
 }
+
+main = Main()
 
 window = Tk()
 
@@ -142,9 +146,33 @@ btn_13 = Button(
     width='22',
     padx='0',
     pady='0',
-    font=('Times Roman', 12, 'bold')
+    font=('Times Roman', 12, 'bold'),
+    command=lambda: handleLogin()
 )
 
+
+def handleLogin():
+    login_val = txt_2.get()
+    res = login(login_val, txt_3.get())
+    if type(res) == str:
+        lbl_11.config(text=res)
+    else:
+        if res:
+            main.setName(login_val)
+            forgetAll()
+            if login_val == 'ADMIN':
+                Admin_Mode()
+            else:
+                lbl_8.config(text=login_val)
+                User()
+        else:
+            count = main.psTry()
+            if count == 0:
+                window.destroy()
+            tmp = 'Неверный пароль, осталось попыток:' + str(count)
+            lbl_11.config(text=tmp)
+
+    
 btn_14 = Button(
     text='выход',
     background=config['btn_color_1'],
@@ -157,14 +185,19 @@ btn_14 = Button(
 )
 
 btn_15 = Button(
-    text='Изменить',
+    text='Change',
     background=config['btn_color_1'],
     activebackground=config['btn_color_2'],
     width='22',
     padx='0',
     pady='0',
     font=('Times Roman', 12, 'bold'),
+    command=lambda: handleChangePassword()
 )
+
+def handleChangePassword():
+    pass
+
 
 btn_16 = Button(
     text='Выход',
@@ -240,7 +273,7 @@ txt_5 = Entry(window, width=10)
 
 txt_6 = Entry(window, width=10)
 
-chk_1 = Checkbutton(window, text='Заблокировать пользователя',
+chk_1 = Checkbutton(text='Заблокировать пользователя',
     background=('#00FF7F'),
     activebackground=('#00FF7F'),
 )
@@ -329,7 +362,7 @@ lbl_7=Label(text='новый пароль: ',
     fg='black'
 )
 
-lbl_8=Label(text='имя пользователя: ',
+lbl_8=Label(text='',
     background='#00FF7F',
     activebackground='#00FF7F',
     justify=CENTER,
@@ -353,11 +386,11 @@ lbl_10=Label(text='пароль:',
     fg='black'
 )
 
-lbl_11=Label(text='статус',
+lbl_11=Label(
     background='#00FF7F',
     activebackground='#00FF7F',
     justify=RIGHT,
-    font=('Times Roman', 15, 'bold'),
+    font=('Times Roman', 10, 'bold'),
     fg='red'
 )
 
@@ -417,44 +450,8 @@ def Login():
     lbl_2.place(height=32, width=170, x = 25, y = 90)               # введите пароль
     txt_2.place(height=24, width=150, x = 200, y = 55)              # форма для заполнения №1
     txt_3.place(height=24, width=150, x = 200, y = 95)              # форма для заполнения №2
+    lbl_11.place(height=25, width=300, x = 100, y = 125) 
     btn_13.place(height=32, width=120, x = 150, y = 155)            # войти
-    btn_1.place_forget()                                            # скрывает
-    btn_2.place_forget()
-    btn_3.place_forget()
-    btn_4.place_forget()
-    btn_5.place_forget()
-    lbl_3.place_forget()
-    lbl_4.place_forget()
-    lbl_5.place_forget()
-    lbl_6.place_forget()
-    btn_14.place_forget()
-    lbl_7.place_forget()
-    txt_4.place_forget()
-    btn_15.place_forget()
-    lbl_8.place_forget()
-    btn_16.place_forget()
-    txt_1.place_forget()
-    btn_6.place_forget()
-    btn_7.place_forget()
-    btn_8.place_forget()
-    btn_9.place_forget()
-    btn_10.place_forget()
-    btn_11.place_forget()
-    chk_1.place_forget()
-    lbl_12.place_forget()
-    lbl_13.place_forget()
-    lbl_14.place_forget()
-    lbl_15.place_forget()
-    lbl_16.place_forget()
-    lbl_17.place_forget()
-    chk_2.place_forget()
-    chk_3.place_forget()
-    chk_4.place_forget()
-    chk_5.place_forget()
-    chk_6.place_forget()
-    chk_7.place_forget()
-    btn_20.place_forget()
-    btn_21.place_forget()
 
 def Admin_Mode():
     window.geometry('415x255')              
@@ -501,13 +498,12 @@ def Author():
     btn_4.place_forget()
     btn_5.place_forget()
 
-def user():
-    print('HEllO')
+def User():
     window.geometry('415x255')              
     window.configure(bg = '#00FF7F')           
     window.title('Вход пользователя')
     lbl_7.place(height=30, width=150, x = 30, y = 70)               # новый пароль
-    txt_4.place(height=25, width=200, x = 160, y = 72)              # форма для текста №1
+    txt_4.place(height=25, width=200, x = 190, y = 72)              # форма для текста №1
     btn_15.place(height=25, width=120, x = 150, y = 120)            # изменить
     lbl_8.place(height=25, width=240, x = 80, y = 20)               # имя пользователя
     btn_16.place(height=25, width=120, x = 150, y = 200)
@@ -546,11 +542,58 @@ def restrictions():
     btn_20.place(height=30, width=120, x = 70, y = 205)                 # сохранить
     btn_21.place(height=30, width=120, x = 215, y = 205)                 # выход
 
+def forgetAll():
+    btn_1.place_forget()                                            # скрывает
+    btn_2.place_forget()
+    btn_3.place_forget()
+    btn_4.place_forget()
+    btn_5.place_forget()
+    btn_6.place_forget()
+    btn_7.place_forget()
+    btn_8.place_forget()
+    btn_9.place_forget()
+    btn_10.place_forget()
+    btn_11.place_forget()
+    btn_12.place_forget()
+    btn_13.place_forget()
+    btn_14.place_forget()
+    btn_15.place_forget()
+    btn_16.place_forget()
+    btn_17.place_forget()
+    btn_18.place_forget()
+    btn_19.place_forget()
+    btn_20.place_forget()
+    btn_21.place_forget()
+    lbl_1.place_forget()
+    lbl_2.place_forget()
+    lbl_3.place_forget()
+    lbl_4.place_forget()
+    lbl_5.place_forget()
+    lbl_6.place_forget()
+    lbl_7.place_forget()
+    lbl_8.place_forget()
+    lbl_12.place_forget()
+    lbl_13.place_forget()
+    lbl_14.place_forget()
+    lbl_15.place_forget()
+    lbl_16.place_forget()
+    lbl_17.place_forget()
+    txt_1.place_forget()
+    txt_2.place_forget()
+    txt_3.place_forget()
+    txt_4.place_forget()
+    chk_1.place_forget()
+    chk_2.place_forget()
+    chk_3.place_forget()
+    chk_4.place_forget()
+    chk_5.place_forget()
+    chk_6.place_forget()
+    chk_7.place_forget()
 # add_user()
-# user()
+# User()
 # Author()
-Admin_Mode()
-# Login()
+# Admin_Mode()
+Login()
 #List_of_users()
 # change()
 #restrictions()
