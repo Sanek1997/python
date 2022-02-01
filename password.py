@@ -442,6 +442,14 @@ lbl_17=Label(text='правило 6:',
     fg='black'
 )
 
+authorLabel=Label(text='old password',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=LEFT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
 def Login():
     window.geometry('415x255')              
     window.configure(bg = '#00FF7F')                                # задаем цвет окна
@@ -589,13 +597,64 @@ def forgetAll():
     chk_5.place_forget()
     chk_6.place_forget()
     chk_7.place_forget()
+
+psOldLabel=Label(text='старый пароль:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+changeBtn = Button(
+    text='Изменить',
+    background=config['btn_color_1'],
+    activebackground=config['btn_color_2'],
+    width='22',
+    padx='0',
+    pady='0',
+    font=('Times Roman', 12, 'bold'),
+)
+
+statusLabel=Label(text='статус:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+psNewLabel=Label(text='новый пароль:',
+    background='#00FF7F',
+    activebackground='#00FF7F',
+    justify=RIGHT,
+    font=('Times Roman', 15),
+    fg='black'
+)
+
+psOld = Entry(window, width=10)
+psNew = Entry(window, width=10)
+
+
+def change():
+    window.geometry('415x255')              
+    window.configure(bg = '#00FF7F')           
+    window.title('правила')
+
+    psOldLabel.place(height=30, width=150, x = 15, y = 38)    
+    psNewLabel.place(height=30, width=150, x = 18, y = 84)   
+    psOld.place(height=27, width=200, x = 180, y = 40)  
+    psNew.place(height=27, width=200, x = 180, y = 85)  
+    changeBtn.place(height=27, width=140, x = 140, y = 155)
+    statusLabel.place(height=27, width=140, x = 140, y = 120)
+    
 # add_user()
-# User()
+#User()
 # Author()
 # Admin_Mode()
-Login()
+#Login()
 #List_of_users()
-# change()
+change()
 #restrictions()
 
 mainloop()
