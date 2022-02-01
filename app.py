@@ -1,4 +1,6 @@
 from tkinter import *
+from tkinter import messagebox
+from core import *
 
 config = {
     'btn_color_1': '#FA8072',                           # Цвет кнопок в обычном состоянии (добавить пользователя, Список имен пользователей, Изменить пароль)
@@ -14,8 +16,8 @@ class Login:
     def __init__(self) -> None:
         self.psTry = 4
     
+    status = ''
     window.title('Login')
-
     lgLabel = Label(
         text='Введите логин: ',
         background='#00FF7F',
@@ -37,6 +39,9 @@ class Login:
         font=('Times Roman', 10, 'bold'),
         fg='red'
     )
+    login = Entry(window, width=10)
+    password = Entry(window, width=10)
+
     loginBtn = Button(
         text='войти',
         background=config['btn_color_1'],
@@ -45,10 +50,17 @@ class Login:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda: handleLogin()
     )
-    login = Entry(window, width=10)
-    password = Entry(window, width=10)
-    
+
+    def setStatus(self, value):
+        self.status.config(text=value)
+
+    def psTryFn(self):
+        print('and here')
+        self.psTry -= 1
+        return self.psTry
+
     def start(self):
         self.lgLabel.place(height=32, width=150, x = 42, y = 50)     
         self.psLabel.place(height=32, width=170, x = 25, y = 90)  
@@ -58,6 +70,10 @@ class Login:
         self.loginBtn.place(height=32, width=120, x = 150, y = 155) 
     
     def end(self):
+        self.login.delete(0, END)
+        self.password.delete(0, END)
+        self.status.config(text='')
+        self.psTry = 4
         self.lgLabel.place_forget()
         self.psLabel.place_forget()
         self.login.place_forget()
@@ -76,6 +92,7 @@ class Admin:
         padx='0', 
         pady='0', 
         font=('Times Roman', 12, 'bold'),
+        command=lambda:handleAddUserWd(),
     )
 
     userList = Button(
@@ -106,6 +123,7 @@ class Admin:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda: handleAddAboutWd(),
     )
 
     exit = Button(
@@ -116,6 +134,7 @@ class Admin:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda: handleExitAdmin(),
     )
     def start(self):
         self.addUser.place(height=35, width=250, x = 20, y = 20)          
@@ -132,23 +151,27 @@ class Admin:
         self.exit.place_forget()
 
 class Rules:
-    def __init__(self, rules:list):
-        self.rules = rules
-        print('lol')
-        w = Tk()
-        w.geometry('315x255')              
-        w.configure(bg = '#00FF7F') 
+    def __init__(self):
+        self.rules = []
+        self.w = Tk()
+        self.w.geometry('315x255')              
+        self.w.configure(bg = '#00FF7F')
+        self.var_2 = IntVar(self.w)
+        self.var_4 = IntVar(self.w)
+        self.var_6 = IntVar(self.w) 
+        self.var_8 = IntVar(self.w)
+        self.var_10 = IntVar(self.w)
+        self.var_11 = IntVar(self.w)
 
-        self.rule_2 = Label(w,
+        self.rule_2 = Label(self.w,
             text='правило 2:',
             background='#00FF7F',
             activebackground='#00FF7F',
             justify=RIGHT,
             font=('Times Roman', 15),
-            fg='black'
+            fg='black',
         )
-
-        self.rule_4 = Label(w,
+        self.rule_4 = Label(self.w,
             text='правило 4:',
             background='#00FF7F',
             activebackground='#00FF7F',
@@ -156,8 +179,7 @@ class Rules:
             font=('Times Roman', 15),
             fg='black'
         )
-
-        self.rule_6 = Label(w,
+        self.rule_6 = Label(self.w,
             text='правило 6:',
             background='#00FF7F',
             activebackground='#00FF7F',
@@ -165,8 +187,7 @@ class Rules:
             font=('Times Roman', 15),
             fg='black'
         )
-
-        self.rule_8 = Label(w,
+        self.rule_8 = Label(self.w,
             text='правило 8:',
             background='#00FF7F',
             activebackground='#00FF7F',
@@ -174,8 +195,7 @@ class Rules:
             font=('Times Roman', 15),
             fg='black'
         )
-
-        self.rule_10 = Label(w,
+        self.rule_10 = Label(self.w,
             text='правило 10:',
             background='#00FF7F',
             activebackground='#00FF7F',
@@ -183,8 +203,7 @@ class Rules:
             font=('Times Roman', 15),
             fg='black'
         )
-
-        self.rule_11 = Label(w,
+        self.rule_11 = Label(self.w,
             text='правило 11:',
             background='#00FF7F',
             activebackground='#00FF7F',
@@ -192,36 +211,54 @@ class Rules:
             font=('Times Roman', 15),
             fg='black'
         )
-        self.chk_2 = Checkbutton(w, text='',                                # правило 1
+        self.chk_2 = Checkbutton(self.w, text='',                                # правило 1
             background=('#00FF7F'),
-            activebackground=('#00FF7F')
+            activebackground=('#00FF7F'),
+            state='active',
+            command=self.setChecked,
+            variable=self.var_2,
+            onvalue=1,
+            offvalue=0,
         )
-
-        self.chk_4 = Checkbutton(w, text='',                                # правило 2
+        self.chk_4 = Checkbutton(self.w, text='',                                # правило 2
             background=('#00FF7F'),
-            activebackground=('#00FF7F')
+            activebackground=('#00FF7F'),
+            command=self.setChecked,
+            onvalue=1,
+            offvalue=0,
+            variable=self.var_4
         )
-
-        self.chk_6 = Checkbutton(w, text='',                                # правило 3
+        self.chk_6 = Checkbutton(self.w, text='',                                # правило 3
             background=('#00FF7F'),
-            activebackground=('#00FF7F')
+            activebackground=('#00FF7F'),
+            command=self.setChecked,
+            variable=self.var_6,
+            onvalue=1,
+            offvalue=0,
         )
-
-        self.chk_8 = Checkbutton(w, text='',                                # правило 4
+        self.chk_8 = Checkbutton(self.w, text='',                                # правило 4
             background=('#00FF7F'),
-            activebackground=('#00FF7F')
+            activebackground=('#00FF7F'),
+            command=self.setChecked,
+            variable=self.var_8,
         )
-
-        self.chk_10 = Checkbutton(w, text='',                                # правило 5
+        self.chk_10 = Checkbutton(self.w, text='',                                # правило 5
             background=('#00FF7F'),
-            activebackground=('#00FF7F')
+            activebackground=('#00FF7F'),
+            command=self.setChecked,
+            variable=self.var_10,
+            onvalue=1,
+            offvalue=0,
         )
-
-        self.chk_11 = Checkbutton(w, text='',                                # правило 6
+        self.chk_11 = Checkbutton(self.w, text='',                                # правило 6
             background=('#00FF7F'),
-            activebackground=('#00FF7F')
+            activebackground=('#00FF7F'),
+            command=self.setChecked,
+            variable=self.var_11,
+            onvalue=1,
+            offvalue=0,
         )
-        self.save = Button(w,
+        self.save = Button(self.w,
             text='сохранить',
             background='#00CED1',
             activebackground='#00CED1',
@@ -229,8 +266,9 @@ class Rules:
             padx='0',
             pady='0',
             font=('Times Roman', 12, 'bold'),
+            command=lambda: handleSaveRules(rules=self.rules)
         )
-        self.exit = Button(w,
+        self.exit = Button(self.w,
             text='выход',
             background='#00CED1',
             activebackground='#00CED1',
@@ -239,7 +277,25 @@ class Rules:
             pady='0',
             font=('Times Roman', 12, 'bold'),
         )
-    def start(self):
+    
+    def setChecked(self):
+        tmp = []
+        if (self.var_2.get()): tmp.append('2')
+        if (self.var_4.get()): tmp.append('6')
+        if (self.var_6.get()): tmp.append('10')
+        if (self.var_8.get()): tmp.append('4')
+        if (self.var_10.get()): tmp.append('8')
+        if (self.var_11.get()): tmp.append('11')
+        self.rules = tmp
+        print(self.rules)
+
+    def start(self, values:list):
+        if ('2' in values): self.var_2.set(1)
+        if ('4' in values): self.var_4.set(1)
+        if ('6' in values): self.var_6.set(1)
+        if ('8' in values): self.var_8.set(1)
+        if ('10' in values): self.var_10.set(1)
+        if ('11' in values): self.var_11.set(1)
         self.rule_2.place(height=20, width=100, x = 120, y = 15)              
         self.rule_4.place(height=20, width=100, x = 120, y = 45)              
         self.rule_6.place(height=20, width=100, x = 120, y = 75)              
@@ -253,27 +309,14 @@ class Rules:
         self.chk_6.place(height=20, width=20, x = 230, y = 137)
         self.chk_11.place(height=20, width=20, x = 230, y = 167)
         self.save.place(height=30, width=120, x = 50, y = 205)              
-        self.exit.place(height=30, width=120, x = 195, y = 205) 
+        self.exit.place(height=30, width=120, x = 195, y = 205)
 
     def end(self):
-        self.rule_2.place_forget()
-        self.rule_4.place_forget()
-        self.rule_6.place_forget()
-        self.rule_8.place_forget()
-        self.rule_10.place_forget()
-        self.rule_11.place_forget()
-        self.chk_2.place_forget()
-        self.chk_8.place_forget()
-        self.chk_4.place_forget()
-        self.chk_10.place_forget()
-        self.chk_6.place_forget()
-        self.chk_11.place_forget()
-        self.save.place_forget()
-        self.exit.place_forget()
+        self.w.destroy()
 
 class CreateUser:
-    def __init__(self) -> None:
-        pass
+    def __init__(self):
+        self.ruleItems = []
     
     userNameLabel = Label(text='имя пользователя:',
         background='#00FF7F',
@@ -307,6 +350,7 @@ class CreateUser:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda: handleAddRulesWd(),
     )
     create = Button(
         text='создать',
@@ -316,6 +360,7 @@ class CreateUser:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda: handleCreateUser(),
     )
     exit = Button(
         text='выход',
@@ -325,7 +370,13 @@ class CreateUser:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda: handleExitAddUserWd(),
     )
+    def setRules(self, rules):
+        self.ruleItems = rules
+
+    def setStatus(self, value):
+        self.status.config(text=value)
 
     def start(self):
         self.userNameLabel.place(height=25, width=170, x = 35, y = 39)               
@@ -345,7 +396,7 @@ class CreateUser:
         self.rules.place_forget()            
         self.create.place_forget()             
         self.exit.place_forget()            
-        self.status.place_forget() 
+        self.status.place_forget()
 
 class UserList:
     def __init__(self) -> None:
@@ -432,13 +483,268 @@ class UserList:
         self.rules.place_forget()
         self.blocked.place_forget()
 
+class User:             
+    def __init__(self):
+        self.login = ''
 
+    window.title('Вход в систему')
 
-def main():
-    CreateUser().start()
+    psLabel=Label(
+        text='новый пароль: ',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=CENTER,
+        font=('Times Roman', 15),
+        fg='black'
+    )
+
+    userLabel=Label(
+        text='',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=CENTER,
+        font=('Times Roman', 15, 'bold'),
+        fg='red'
+    )
+
+    input = Entry(window, width=10)
+
+    change = Button(
+        text='Change',
+        background=config['btn_color_1'],
+        activebackground=config['btn_color_2'],
+        width='22',
+        padx='0',
+        pady='0',
+        font=('Times Roman', 12, 'bold'),
+        command=lambda:handleChangePassword(),
+    )
+
+    exitBtn= Button(
+        text='Выход',
+        background='#00CED1',
+        activebackground='#00CED1',
+        width='22',
+        padx='0',
+        pady='0',
+        font=('Times Roman', 12, 'bold'),
+        command=lambda: handleUserExit()
+    )
+
+    def getLogin(self):
+        return self.login
+
+    def start(self, value):
+        self.login = value
+        self.userLabel.config(text=value)
+        self.psLabel.place(height=30, width=150, x = 30, y = 70)               # новый пароль
+        self.input.place(height=25, width=200, x = 190, y = 72)              # форма для текста №1
+        self.change.place(height=25, width=120, x = 150, y = 120)            # изменить
+        self.userLabel.place(height=25, width=240, x = 80, y = 20)               # имя пользователя
+        self.exitBtn.place(height=25, width=120, x = 150, y = 200)
+
+    def end(self):
+        self.psLabel.place_forget()
+        self.input.place_forget()
+        self.change.place_forget()
+        self.userLabel.place_forget()
+        self.exitBtn.place_forget()
+
+class About:
+    window.title('Об авторе')
+
+    aboutLabel=Label(text='Автор: ',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=CENTER,
+        font=('Times Roman', 16, 'bold'),
+        fg='red'
+    )
+
+    tasktitle=Label(text='Задание: ',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=CENTER,
+        font=('Times Roman', 16, 'bold'),
+        fg='red'
+    )
+
+    authorLabel=Label(text='студент группы ИВТ-41 \rЛаптандер Александр Михайлович ',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=LEFT,
+        font=('Times Roman', 15),
+        fg='black'
+    )
+
+    taskLabel=Label(text='Разработать программу, реализующую \r интерфейсную систему с применением \r механизмов парольной защиты ',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=CENTER,
+        font=('Times Roman', 15),
+        fg='black'
+    )   
+
+    exitBtn = Button(
+        text='выход',
+        background=config['btn_color_1'],
+        activebackground=config['btn_color_2'],
+        width='22',
+        padx='0',
+        pady='0',
+        font=('Times Roman', 12, 'bold'),
+        command=lambda:handleExitAboutWd(),
+    )
+
+    def start(self):
+        self.aboutLabel.place(height=40, width=400, x = 20, y = 0)                # автор
+        self.tasktitle.place(height=80, width=400, x = 20, y = 70)               # задание
+        self.authorLabel.place(height=50, width=400, x = 30, y = 35)               # студент группы ИВТ-41 \rЛаптандер Александр Михайлович
+        self.taskLabel.place(height=70, width=400, x = 10, y = 125)              # разработать программу, реализующую интерфейсную систему с применением механизмов парольной защиты
+        self.exitBtn.place(height=30, width=70, x = 180, y = 210) 
+
+    def end(self):
+        self.aboutLabel.place_forget()
+        self.tasktitle.place_forget()
+        self.authorLabel.place_forget()
+        self.taskLabel.place_forget()
+        self.exitBtn.place_forget()
+
+class Change:
+    window.title('Изменение пароля')
     
-    mainloop()
+    psOldLabel=Label(text='старый пароль:',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=RIGHT,
+        font=('Times Roman', 15),
+        fg='black'
+    )
 
-main()
+    changeBtn = Button(
+        text='Изменить',
+        background=config['btn_color_1'],
+        activebackground=config['btn_color_2'],
+        width='22',
+        padx='0',
+        pady='0',
+        font=('Times Roman', 12, 'bold'),
+    )
+
+    statusLabel=Label(text='статус:',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=RIGHT,
+        font=('Times Roman', 15),
+        fg='black'
+    )
+
+    psNewLabel=Label(text='новый пароль:',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=RIGHT,
+        font=('Times Roman', 15),
+        fg='black'
+    )
+
+    psOld = Entry(window, width=10)
+    psNew = Entry(window, width=10)
+
+    def start(self):
+        self.psOldLabel.place(height=30, width=150, x = 15, y = 38)    
+        self.psNewLabel.place(height=30, width=150, x = 18, y = 84)   
+        self.psOld.place(height=27, width=200, x = 180, y = 40)  
+        self.psNew.place(height=27, width=200, x = 180, y = 85)  
+        self.changeBtn.place(height=27, width=140, x = 140, y = 155)
+        self.statusLabel.place(height=27, width=140, x = 140, y = 120)
+
+    def end(self):
+        self.psOldLabel.place_forget()
+        self.psNewLabel.place_forget()
+        self.psOld.place_forget()
+        self.psNew.place_forget()
+        self.changeBtn.place_forget()
+        self.statusLabel.place_forget()
+
+login_wd = Login()
+login_wd.start()
+user_wd = User()
+admin_wd = Admin()
+# admin_wd.start()
+addUser_wd = CreateUser()
+about_wd = About()
+
+def handleLogin():
+    login_val = login_wd.login.get()
+    password = login_wd.password.get()
+    res = login(login_val, password)
+    if type(res) == str:
+        login_wd.setStatus(res)
+    else:
+        if res:
+            login_wd.end()
+            if login_val == 'ADMIN':
+                admin_wd.start()
+            else:
+                user_wd.start(login_val)
+        else:
+            print('here')
+            count = login_wd.psTryFn()
+            if count == 0:
+                window.destroy()
+            tmp = 'Неверный пароль, осталось попыток:' + str(count)
+            login_wd.setStatus(tmp)
+
+def handleChangePassword():
+    password = user_wd.input.get()
+    login = user_wd.getLogin()
+    print('data', login, password)
+    updateUser(login, 'password', password)
+    messagebox.showinfo("Change password", "Пароль изменен")
+
+def handleUserExit():
+    user_wd.end()
+    login_wd.start()
+
+def handleAddUserWd():
+    admin_wd.end()
+    addUser_wd.start()
+
+def handleSaveRules(rules:list):
+    addUser_wd.setRules(rules)
+    rules_wd.end()
+
+def handleAddRulesWd():
+    global rules_wd
+    rules_wd = Rules()
+    rules_wd.start(addUser_wd.ruleItems)
+
+def handleCreateUser():
+    login_val = addUser_wd.name.get()
+    password = addUser_wd.password.get()
+    rules = addUser_wd.ruleItems
+    res = createUser(login_val, password, rules)
+    if (type(res)==str):
+        addUser_wd.setStatus(res)
+    else:
+        messagebox.showinfo('Succes', 'Пользователь создан')
+
+def handleExitAdmin():
+    admin_wd.end()
+    login_wd.start()
+
+def handleAddAboutWd():
+    admin_wd.end()
+    about_wd.start()
+
+def handleExitAboutWd():
+    about_wd.end()
+    admin_wd.start()
+
+def handleExitAddUserWd():
+    addUser_wd.end()
+    admin_wd.start()
+    
+mainloop()
 
     

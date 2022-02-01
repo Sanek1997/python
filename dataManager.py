@@ -55,6 +55,7 @@ def getUser(login:str):
     f.close()
 
 def updateUser(login, key, value):
+    print('event', login, key, value)
     f = open(fName, 'r')
     lines = f.readlines()
     f.close()
@@ -77,4 +78,3 @@ def deleteUser(login):
     newLines = list(filter(lambda line: _getLogin(line) != login, lines))
     update.writelines(newLines)
     f.close()
-
