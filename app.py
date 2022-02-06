@@ -2,7 +2,8 @@ from re import T
 from tkinter import *
 from tkinter import messagebox
 from core import *
-from tkcalendar import Calendar, DateEntry
+from tkcalendar import Calendar
+import datetime
 
 config = {
     'btn_color_1': '#FA8072',                           # Цвет кнопок в обычном состоянии (добавить пользователя, Список имен пользователей, Изменить пароль)
@@ -59,7 +60,6 @@ class Login:
         self.status.config(text=value)
 
     def psTryFn(self):
-        print('and here')
         self.psTry -= 1
         return self.psTry
 
@@ -106,6 +106,7 @@ class Admin:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda:handleAddUserListWd(),
     )
     changePassword = Button(
         text='Изменить пароль',
@@ -115,6 +116,7 @@ class Admin:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda:handleAddChangeAdminPassword()
     )
     about = Button(
         text='о программе',
@@ -154,7 +156,8 @@ class Admin:
 
 
 class Rules:
-    def __init__(self):
+    def __init__(self, mode):
+        self.mode = mode
         self.rules = []
         self.w = Tk()
         self.w.geometry('315x255')              
@@ -269,7 +272,7 @@ class Rules:
             padx='0',
             pady='0',
             font=('Times Roman', 12, 'bold'),
-            command=lambda: handleSaveRules(rules=self.rules)
+            command=lambda: handleSaveRules(rules=self.rules, mode=self.mode)
         )
         self.exit = Button(self.w,
             text='выход',
@@ -279,6 +282,7 @@ class Rules:
             padx='0',
             pady='0',
             font=('Times Roman', 12, 'bold'),
+            command=self.end
         )
     
     def setChecked(self):
@@ -406,85 +410,131 @@ class CreateUser:
 
 class UserList:
     def __init__(self) -> None:
-        pass
+        self.users = []
+        self.index = 1
+        self.checkVar = IntVar(window)
+        self.prev = Button(
+            text='предыдущий',
+            background=config['btn_color_1'],
+            activebackground=config['btn_color_2'],
+            width='22',
+            padx='0',
+            pady='0',
+            font=('Times Roman', 12, 'bold'), 
+            command=self.prevUser
+        )
+        self.next = Button(
+            text='cледующий',
+            background=config['btn_color_1'],
+            activebackground=config['btn_color_2'],
+            width='22',
+            padx='0',
+            pady='0',
+            font=('Times Roman', 12, 'bold'),
+            command=self.nextUser,
+        )
+        self.deleteUser = Button(
+            text='Удалить пользователя',
+            background=config['btn_color_1'],
+            activebackground=config['btn_color_2'],
+            width='22',
+            padx='0',
+            pady='0',
+            font=('Times Roman', 12, 'bold'),
+            command=self.delete
+        )
+        self.exit = Button(
+            text='Закрыть',
+            background=config['btn_color_1'],
+            activebackground=config['btn_color_2'],
+            width='22',
+            padx='0',
+            pady='0',
+            font=('Times Roman', 12, 'bold'),
+            command=lambda: handleExitUserListWd(),
+        )
+        self.rules = Button(
+            text='Правила',
+            background=config['btn_color_1'],
+            activebackground=config['btn_color_2'],
+            width='22',
+            padx='0',
+            pady='0',
+            font=('Times Roman', 12, 'bold'),
+            command=lambda:handleAddRulesWdFromList(self.users[self.index]['login'])
+        )
+        self.blocked = Checkbutton(text='Заблокировать пользователя',
+            background=('#00FF7F'),
+            activebackground=('#00FF7F'),
+            variable=self.checkVar,
+            onvalue=1,
+            offvalue=0,
+            command=self.updateStatus,
+        )
+        self.userName = Label(window, width=10, text='добавьте пользователей')
 
-    prev = Button(
-        text='предыдущий',
-        background=config['btn_color_1'],
-        activebackground=config['btn_color_2'],
-        width='22',
-        padx='0',
-        pady='0',
-        font=('Times Roman', 12, 'bold')
-    )
-    next = Button(
-        text='cледующий',
-        background=config['btn_color_1'],
-        activebackground=config['btn_color_2'],
-        width='22',
-        padx='0',
-        pady='0',
-        font=('Times Roman', 12, 'bold')
-    )
-    deleteUser = Button(
-        text='Удалить пользователя',
-        background=config['btn_color_1'],
-        activebackground=config['btn_color_2'],
-        width='22',
-        padx='0',
-        pady='0',
-        font=('Times Roman', 12, 'bold')
-    )
-    save = Button(
-        text='Сохранить',
-        background=config['btn_color_1'],
-        activebackground=config['btn_color_2'],
-        width='22',
-        padx='0',
-        pady='0',
-        font=('Times Roman', 12, 'bold')
-    )
-    exit = Button(
-        text='Закрыть',
-        background=config['btn_color_1'],
-        activebackground=config['btn_color_2'],
-        width='22',
-        padx='0',
-        pady='0',
-        font=('Times Roman', 12, 'bold'),
-        command=lambda: Login()
-    )
-    rules = Button(
-        text='Правила',
-        background=config['btn_color_1'],
-        activebackground=config['btn_color_2'],
-        width='22',
-        padx='0',
-        pady='0',
-        font=('Times Roman', 12, 'bold')
-    )
-    blocked = Checkbutton(text='Заблокировать пользователя',
-        background=('#00FF7F'),
-        activebackground=('#00FF7F'),
-    )
-    userName = Entry(window, width=10, state='readonly')
+    def nextUser(self):
+        self.index += 1
+        if self.index == len(self.users):
+            self.index = 1
+        if len(self.users) > 1:
+            self.setBlocked()
+            self.userName.config(text=self.users[self.index]['login'])
+
+    def prevUser(self):
+        self.index -= 1
+        if self.index == 0:
+            self.index = len(self.users)-1
+        if len(self.users) > 1:
+            self.setBlocked()
+            self.userName.config(text=self.users[self.index]['login'])
+        else:
+            self.userName.config(text='Добавьте пользователей')
+
+    def setBlocked(self):
+        if len(self.users) > 1:
+            status = self.users[self.index]['status']
+            if status == 'blocked':
+                self.checkVar.set(1)
+            else:
+                self.checkVar.set(0)
+    def delete(self):
+        if len(self.users) > 1:
+            deleteUser(self.users[self.index]['login'])
+            self.users = getData()
+            self.prevUser()
+    
+    def updateStatus(self):
+        if len(self.users) > 1:
+            current = self.users[self.index]
+            if self.checkVar.get():
+                updateUser(current['login'], 'status', 'blocked')
+            else:
+                updateUser(current['login'], 'status', 'active')
+            
+    def getLogin(self):
+        return self.users[self.index]['login']
 
     def start(self):
+        self.users = getData()
+        if (len(self.users) > 1):
+            self.index  = 1
+            self.userName.config(text=self.users[self.index]['login'])
+        self.setBlocked()
         self.userName.place(height=30, width=150, x = 10, y = 15)               
         self.prev.place(height=32, width=120, x = 170, y = 15)              # предыдущий
         self.next.place(height=32, width=110, x = 290, y = 15)              # следующий
-        self.deleteUser.place(height=32, width=220, x = 95, y = 90)              # удалить пользователя
-        self.save.place(height=30, width=120, x = 80, y = 150)              # сохранить
-        self.exit.place(height=30, width=120, x = 210, y = 150)            # отмена
+        self.deleteUser.place(height=32, width=220, x = 95, y = 90)          # сохранить
+        self.exit.place(height=30, width=120, x = 150, y = 150)            # отмена
         self.rules.place(height=30, width=120, x = 145, y = 210)             # правила
         self.blocked.place(height=20, width=180, x = 10, y = 50) 
 
     def end(self):
+        self.index = 1
         self.userName.place_forget()
         self.prev.place_forget()
         self.next.place_forget()
         self.deleteUser.place_forget()
-        self.save.place_forget()
         self.exit.place_forget()
         self.rules.place_forget()
         self.blocked.place_forget()
@@ -630,15 +680,19 @@ class Change:
         padx='0',
         pady='0',
         font=('Times Roman', 12, 'bold'),
+        command=lambda: changeAdPassword(),
     )
 
-    statusLabel=Label(text='статус:',
+    statusLabel=Label(text='',
         background='#00FF7F',
         activebackground='#00FF7F',
         justify=RIGHT,
-        font=('Times Roman', 15),
+        font=('Times Roman', 10),
         fg='black'
     )
+
+    def setStatus(self, value):
+        self.statusLabel.config(text=value)
 
     psNewLabel=Label(text='новый пароль:',
         background='#00FF7F',
@@ -657,7 +711,7 @@ class Change:
         self.psOld.place(height=27, width=200, x = 180, y = 40)  
         self.psNew.place(height=27, width=200, x = 180, y = 85)  
         self.changeBtn.place(height=27, width=140, x = 140, y = 155)
-        self.statusLabel.place(height=27, width=140, x = 140, y = 120)
+        self.statusLabel.place(height=27, width=240, x = 140, y = 120)
 
     def end(self):
         self.psOldLabel.place_forget()
@@ -668,12 +722,13 @@ class Change:
         self.statusLabel.place_forget()
 
 class CalendarWd:
-    def __init__(self) -> None:
+    def __init__(self, mode) -> None:
+        self.mode = mode
         self.tkobj = Tk()
         self.tkobj.geometry("300x300+700+200")
         self.tkobj.title("Calendar picker")
         self.tkc = Calendar(self.tkobj,selectmode="day",year=2022,month=2,date=7)
-        self.but = Button(self.tkobj,text="Select Date", command=lambda:handleSaveDate(),bg="black", fg='white')
+        self.but = Button(self.tkobj,text="Select Date", command=lambda:handleSaveDate(self.mode),bg="black", fg='white')
         self.date = Label(self.tkobj,text='Выберите дату сброса пароля',
             justify=RIGHT,
             font=('Times Roman', 10),
@@ -693,12 +748,7 @@ class CalendarWd:
         self.but.pack_forget()
         self.tkc.pack_forget()
         self.date.pack_forget()
-        self.tkobj.destroy()
-
-
-
-
-        
+        self.tkobj.destroy()        
 
 login_wd = Login()
 # login_wd.start()
@@ -707,6 +757,8 @@ admin_wd = Admin()
 admin_wd.start()
 addUser_wd = CreateUser()
 about_wd = About()
+userlist_wd = UserList()
+change = Change()
 
 def handleLogin():
     login_val = login_wd.login.get()
@@ -742,52 +794,109 @@ def handleAddUserWd():
     admin_wd.end()
     addUser_wd.start()
 
-def handleSaveRules(rules:list):
+def handleSaveRules(rules:list, mode):
     if '4' in rules:
-        handleAddCalendar()
-    addUser_wd.setRules(rules)
-    rules_wd.end()
+        handleAddCalendar(mode)
+    if mode == 'create': 
+        addUser_wd.setRules(rules)
+        rules_wd.end()
+    else:
+        user = getUser(userlist_wd.getLogin())
+        updateUser(userlist_wd.getLogin(), 'rules', rules) 
+        if ('6' in rules) and (not('6' in user['rules'])):
+            createHistory(user['login'], user['password'])
+        elif not('6' in rules) and ('6' in user['rules']):
+            deleteHistory(user['login'])
+        if '8' in rules: 
+            addToRule(user['login'], 'psTry', '5')
+        rules_w.end()
 
 def handleAddRulesWd():
     global rules_wd
-    rules_wd = Rules()
+    rules_wd = Rules('create')
     rules_wd.start(addUser_wd.ruleItems)
 
-def handleAddCalendar():
+def handleAddRulesWdFromList(login):
+    if login != 'ADMIN':
+        user = getUser(login)
+        global rules_w
+        rules_w = Rules('edit')
+        print(user['rules'])
+        rules_w.start(user['rules'])
+
+def handleAddCalendar(mode):
     global cal
-    cal = CalendarWd()
+    cal = CalendarWd(mode)
     cal.start()
 
-def handleSaveDate():
+def handleSaveDate(mode:str):
+    print(mode)
     date = cal.tkc.get_date()
     if not(date):
         cal.setCalLabel('Выберите дату')
     else:
-        addUser_wd.setPassDeadline(date)
-        cal.end()
-    
+        if mode == 'create':
+            addUser_wd.setPassDeadline(date)
+            cal.end()
+        else:
+            strDate = str(date)
+            arr = strDate.split('.')
+            deadline = datetime.date(year=int(arr[2]), month=int(arr[1]), day=int(arr[0]))
+            addToRule(userlist_wd.getLogin(), 'psdead', str(deadline))
+            cal.end()
+
 def handleCreateUser():
     login_val = addUser_wd.name.get()
     password = addUser_wd.password.get()
     rules = addUser_wd.ruleItems
     res = createUser(login_val, password, rules)
     if (type(res)==str):
-        print('401')
         addUser_wd.setStatus(res)
     else:
         if res:
             addUser_wd.setStatus('')
             messages = []
+            deadline=None
             if '2' in rules: messages.append('Правило 2: Пароль состоит из цифр, символов верхнего и нижнего регистра')
-            if '4' in rules: messages.append('Правило 4: Пароль действует до ' + addUser_wd.passDeadline)
-            if '6' in rules: messages.append('Правило 6: Включен журнал истории паролей(history.txt)')
-            if '8' in rules: messages.append('Правило 8: Ограничение на ввод пароля(5 попыток, после ввода последней пользователь блокируется)')
+            if '4' in rules: 
+                strDate = str(addUser_wd.passDeadline)
+                messages.append('Правило 4: Пароль действует до ' + strDate)
+                arr = strDate.split('.')
+                deadline = datetime.date(year=int(arr[2]), month=int(arr[1]), day=int(arr[0]))
+            if '6' in rules: 
+                messages.append('Правило 6: Включен журнал истории паролей(history.txt)')
+                createHistory(login_val, password)
+            if '8' in rules: 
+                messages.append('Правило 8: Ограничение на ввод пароля(5 попыток, после ввода последней пользователь блокируется)')
+                
             if '10' in rules: messages.append('Правило 10: Включен таймаут на ввод пароля')
             if '11' in rules: messages.append('Правило 11: Пользователь не может менять пароль')
+            createRule(login_val, rules, deadline)
             out = 'Пользователь создан\n' + '\n'.join(messages) 
+            addUser_wd.name.delete(0, END)
+            addUser_wd.password.delete(0, END)
             messagebox.showinfo('Succes', out)
         else:
             messagebox.showwarning('', 'Правило 2: Пароль должен содержать цифры, символы верхнего и нижнего регистра')
+
+def changeAdPassword():
+    oldPass = change.psOld.get()
+    newPass = change.psNew.get()
+    admin = getUser('ADMIN')
+    if oldPass != admin['password']:
+        change.setStatus('Старый пароль не совпадает')
+    elif len(newPass) < 6:
+        change.setStatus('Мин. длина пароля: 6')
+    elif len(newPass) > 12:
+        change.setStatus('Макс. длина пароля: 12')
+    else:
+        change.psOld.delete(0, END)
+        change.psNew.delete(0, END)
+        change.end()
+        admin_wd.start()
+        updateUser('ADMIN', 'password', newPass)
+
+
 
 def handleExitAdmin():
     admin_wd.end()
@@ -804,6 +913,19 @@ def handleExitAboutWd():
 def handleExitAddUserWd():
     addUser_wd.end()
     admin_wd.start()
+
+def handleAddUserListWd():
+    admin_wd.end()
+    userlist_wd.start()
+    
+def handleExitUserListWd():
+    userlist_wd.end()
+    admin_wd.start()
+
+def handleAddChangeAdminPassword():
+    admin_wd.end()
+    change.start()
+
     
 mainloop()
 

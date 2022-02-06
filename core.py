@@ -26,8 +26,6 @@ def createUser(login, password:str, rules:list):
         hasDigit = any(map(str.isdigit, password))
         res = all([hasUpperCase, hasLowerCase, hasDigit])
         if not(res): return False
-    if '4' in rules:
-        pass
     addUser(login, password, rules)
     return True
 

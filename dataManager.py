@@ -19,6 +19,7 @@ def _setMockData():
 
 def _remapLineToDict(line:str):
     arr = line[:-1].split(delimiter)
+    print(arr)
     return {
         'login': arr[0],
         'password': arr[1],
@@ -44,7 +45,7 @@ def _remapRulesToDict(line:str):
     arr = line.split(',')
     out = {}
     for item in arr:
-        elem = item.split('-')
+        elem = item.split('=')
         out[elem[0]] = elem[1]
     return out
 #</local>
@@ -53,7 +54,9 @@ def getData():
     f = open(fName, 'r')
     users = []
     for line in f:
-        users.append(_remapLineToDict(line))
+        if len(line.strip()):
+            print(line)
+            users.append(_remapLineToDict(line))
     f.close()
     return users
 
@@ -88,6 +91,8 @@ def deleteUser(login):
     newLines = list(filter(lambda line: _getLogin(line) != login, lines))
     update.writelines(newLines)
     f.close()
+    deleteRule(login)
+    deleteHistory(login)
 
 def addToRule(login, rule, value):
     f = open(rulesFName, 'r')
@@ -101,7 +106,7 @@ def addToRule(login, rule, value):
             rules[rule] = value
             s = ''
             for key in rules:
-                s += key+'-'+rules[key]+','
+                s += key+'='+rules[key]+','
             s = login + delimiter +s[:-1] + '\n'
             newLines.append(s)
         else:
@@ -115,13 +120,13 @@ def createRule(login, rules, date):
     defaultPsTry = 5                # Правило 8: Ограничение на попытки ввода, в задаче не указано 
     f = open(rulesFName, 'a')       # на сколько попыток ставится ограничение, по умолчанию = 5
     data = {}
-    if '4' in rules:
+    if ('4' in rules) and date:
         data['psdead'] = date
     if '8' in rules:
         data['psTry'] = defaultPsTry
     line = ''
     for key in data:
-        line += key+'-'+str(data[key])+','
+        line += key+'='+str(data[key])+','
     line = login+delimiter+line[:-1]+'\n'
     f.write(line)
     f.close()
