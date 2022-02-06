@@ -1,6 +1,8 @@
+from re import T
 from tkinter import *
 from tkinter import messagebox
 from core import *
+from tkcalendar import Calendar, DateEntry
 
 config = {
     'btn_color_1': '#FA8072',                           # Цвет кнопок в обычном состоянии (добавить пользователя, Список имен пользователей, Изменить пароль)
@@ -65,6 +67,7 @@ class Login:
         self.lgLabel.place(height=32, width=150, x = 42, y = 50)     
         self.psLabel.place(height=32, width=170, x = 25, y = 90)  
         self.login.place(height=24, width=150, x = 200, y = 55)  
+        self.login.focus_set()
         self.password.place(height=24, width=150, x = 200, y = 95)  
         self.status.place(height=25, width=300, x = 100, y = 125) 
         self.loginBtn.place(height=32, width=120, x = 150, y = 155) 
@@ -84,6 +87,7 @@ class Login:
 class Admin:
     def __init__(self) -> None:
         pass
+
     window.title('Admin Mode') 
     addUser = Button(
         text='Добавить пользователя', 
@@ -94,7 +98,6 @@ class Admin:
         font=('Times Roman', 12, 'bold'),
         command=lambda:handleAddUserWd(),
     )
-
     userList = Button(
         text='Список имен пользователей',
         background=config['btn_color_1'],
@@ -104,7 +107,6 @@ class Admin:
         pady='0',
         font=('Times Roman', 12, 'bold'),
     )
-
     changePassword = Button(
         text='Изменить пароль',
         background=config['btn_color_1'],
@@ -114,7 +116,6 @@ class Admin:
         pady='0',
         font=('Times Roman', 12, 'bold'),
     )
-
     about = Button(
         text='о программе',
         background=config['btn_color_3'],
@@ -125,7 +126,6 @@ class Admin:
         font=('Times Roman', 12, 'bold'),
         command=lambda: handleAddAboutWd(),
     )
-
     exit = Button(
         text='Выход',
         background=config['btn_color_3'],
@@ -149,6 +149,9 @@ class Admin:
         self.changePassword.place_forget()
         self.about.place_forget()
         self.exit.place_forget()
+    
+    
+
 
 class Rules:
     def __init__(self):
@@ -287,14 +290,13 @@ class Rules:
         if (self.var_10.get()): tmp.append('8')
         if (self.var_11.get()): tmp.append('11')
         self.rules = tmp
-        print(self.rules)
 
     def start(self, values:list):
         if ('2' in values): self.var_2.set(1)
-        if ('4' in values): self.var_4.set(1)
-        if ('6' in values): self.var_6.set(1)
-        if ('8' in values): self.var_8.set(1)
-        if ('10' in values): self.var_10.set(1)
+        if ('4' in values): self.var_8.set(1)
+        if ('6' in values): self.var_4.set(1)
+        if ('8' in values): self.var_10.set(1)
+        if ('10' in values): self.var_6.set(1)
         if ('11' in values): self.var_11.set(1)
         self.rule_2.place(height=20, width=100, x = 120, y = 15)              
         self.rule_4.place(height=20, width=100, x = 120, y = 45)              
@@ -317,6 +319,7 @@ class Rules:
 class CreateUser:
     def __init__(self):
         self.ruleItems = []
+        self.passDeadline = None
     
     userNameLabel = Label(text='имя пользователя:',
         background='#00FF7F',
@@ -378,6 +381,9 @@ class CreateUser:
     def setStatus(self, value):
         self.status.config(text=value)
 
+    def setPassDeadline(self, value):
+        self.passDeadline = value
+
     def start(self):
         self.userNameLabel.place(height=25, width=170, x = 35, y = 39)               
         self.passwordLabel.place(height=25, width=80, x = 130, y = 79)              
@@ -386,7 +392,7 @@ class CreateUser:
         self.rules.place(height=25, width=100, x = 147, y = 150)            
         self.create.place(height=25, width=100, x = 90, y = 190)             
         self.exit.place(height=25, width=100, x = 210, y = 190)            
-        self.status.place(height=25, width=100, x = 150, y = 115) 
+        self.status.place(height=25, width=180, x = 150, y = 115) 
 
     def end(self):
         self.userNameLabel.place_forget()               
@@ -552,7 +558,6 @@ class User:
 
 class About:
     window.title('Об авторе')
-
     aboutLabel=Label(text='Автор: ',
         background='#00FF7F',
         activebackground='#00FF7F',
@@ -560,7 +565,6 @@ class About:
         font=('Times Roman', 16, 'bold'),
         fg='red'
     )
-
     tasktitle=Label(text='Задание: ',
         background='#00FF7F',
         activebackground='#00FF7F',
@@ -568,7 +572,6 @@ class About:
         font=('Times Roman', 16, 'bold'),
         fg='red'
     )
-
     authorLabel=Label(text='студент группы ИВТ-41 \rЛаптандер Александр Михайлович ',
         background='#00FF7F',
         activebackground='#00FF7F',
@@ -576,7 +579,6 @@ class About:
         font=('Times Roman', 15),
         fg='black'
     )
-
     taskLabel=Label(text='Разработать программу, реализующую \r интерфейсную систему с применением \r механизмов парольной защиты ',
         background='#00FF7F',
         activebackground='#00FF7F',
@@ -584,7 +586,6 @@ class About:
         font=('Times Roman', 15),
         fg='black'
     )   
-
     exitBtn = Button(
         text='выход',
         background=config['btn_color_1'],
@@ -666,11 +667,44 @@ class Change:
         self.changeBtn.place_forget()
         self.statusLabel.place_forget()
 
+class CalendarWd:
+    def __init__(self) -> None:
+        self.tkobj = Tk()
+        self.tkobj.geometry("300x300+700+200")
+        self.tkobj.title("Calendar picker")
+        self.tkc = Calendar(self.tkobj,selectmode="day",year=2022,month=2,date=7)
+        self.but = Button(self.tkobj,text="Select Date", command=lambda:handleSaveDate(),bg="black", fg='white')
+        self.date = Label(self.tkobj,text='Выберите дату сброса пароля',
+            justify=RIGHT,
+            font=('Times Roman', 10),
+            fg='black'
+        )        
+        self.tkobj.overrideredirect(True)
+
+    def setCalLabel(self, value):
+        self.date.config(text=value)
+        
+    def start(self):
+        self.but.pack()
+        self.date.pack()
+        self.tkc.pack(pady=40)
+
+    def end(self):
+        self.but.pack_forget()
+        self.tkc.pack_forget()
+        self.date.pack_forget()
+        self.tkobj.destroy()
+
+
+
+
+        
+
 login_wd = Login()
-login_wd.start()
+# login_wd.start()
 user_wd = User()
 admin_wd = Admin()
-# admin_wd.start()
+admin_wd.start()
 addUser_wd = CreateUser()
 about_wd = About()
 
@@ -688,7 +722,6 @@ def handleLogin():
             else:
                 user_wd.start(login_val)
         else:
-            print('here')
             count = login_wd.psTryFn()
             if count == 0:
                 window.destroy()
@@ -698,7 +731,6 @@ def handleLogin():
 def handleChangePassword():
     password = user_wd.input.get()
     login = user_wd.getLogin()
-    print('data', login, password)
     updateUser(login, 'password', password)
     messagebox.showinfo("Change password", "Пароль изменен")
 
@@ -711,6 +743,8 @@ def handleAddUserWd():
     addUser_wd.start()
 
 def handleSaveRules(rules:list):
+    if '4' in rules:
+        handleAddCalendar()
     addUser_wd.setRules(rules)
     rules_wd.end()
 
@@ -719,15 +753,41 @@ def handleAddRulesWd():
     rules_wd = Rules()
     rules_wd.start(addUser_wd.ruleItems)
 
+def handleAddCalendar():
+    global cal
+    cal = CalendarWd()
+    cal.start()
+
+def handleSaveDate():
+    date = cal.tkc.get_date()
+    if not(date):
+        cal.setCalLabel('Выберите дату')
+    else:
+        addUser_wd.setPassDeadline(date)
+        cal.end()
+    
 def handleCreateUser():
     login_val = addUser_wd.name.get()
     password = addUser_wd.password.get()
     rules = addUser_wd.ruleItems
     res = createUser(login_val, password, rules)
     if (type(res)==str):
+        print('401')
         addUser_wd.setStatus(res)
     else:
-        messagebox.showinfo('Succes', 'Пользователь создан')
+        if res:
+            addUser_wd.setStatus('')
+            messages = []
+            if '2' in rules: messages.append('Правило 2: Пароль состоит из цифр, символов верхнего и нижнего регистра')
+            if '4' in rules: messages.append('Правило 4: Пароль действует до ' + addUser_wd.passDeadline)
+            if '6' in rules: messages.append('Правило 6: Включен журнал истории паролей(history.txt)')
+            if '8' in rules: messages.append('Правило 8: Ограничение на ввод пароля(5 попыток, после ввода последней пользователь блокируется)')
+            if '10' in rules: messages.append('Правило 10: Включен таймаут на ввод пароля')
+            if '11' in rules: messages.append('Правило 11: Пользователь не может менять пароль')
+            out = 'Пользователь создан\n' + '\n'.join(messages) 
+            messagebox.showinfo('Succes', out)
+        else:
+            messagebox.showwarning('', 'Правило 2: Пароль должен содержать цифры, символы верхнего и нижнего регистра')
 
 def handleExitAdmin():
     admin_wd.end()
