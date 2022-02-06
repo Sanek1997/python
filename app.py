@@ -1,9 +1,9 @@
-from re import T
 from tkinter import *
 from tkinter import messagebox
 from core import *
 from tkcalendar import Calendar
 import datetime
+import time
 
 config = {
     'btn_color_1': '#FA8072',                           # Цвет кнопок в обычном состоянии (добавить пользователя, Список имен пользователей, Изменить пароль)
@@ -543,14 +543,23 @@ class User:
     def __init__(self):
         self.login = ''
 
-    window.title('Вход в систему')
+    window.title('Пользователь')
 
     psLabel=Label(
         text='новый пароль: ',
         background='#00FF7F',
         activebackground='#00FF7F',
         justify=CENTER,
-        font=('Times Roman', 15),
+        font=('Times Roman', 12),
+        fg='black'
+    )
+
+    psLabel_1=Label(
+        text='Подтвердите пароль: ',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=CENTER,
+        font=('Times Roman', 12),
         fg='black'
     )
 
@@ -564,6 +573,7 @@ class User:
     )
 
     input = Entry(window, width=10)
+    input_1 = Entry(window, width=10)
 
     change = Button(
         text='Change',
@@ -593,10 +603,12 @@ class User:
     def start(self, value):
         self.login = value
         self.userLabel.config(text=value)
-        self.psLabel.place(height=30, width=150, x = 30, y = 70)               # новый пароль
-        self.input.place(height=25, width=200, x = 190, y = 72)              # форма для текста №1
-        self.change.place(height=25, width=120, x = 150, y = 120)            # изменить
-        self.userLabel.place(height=25, width=240, x = 80, y = 20)               # имя пользователя
+        self.psLabel_1.place(height=30, width=150, x = 30, y = 90)
+        self.psLabel.place(height=30, width=200, x = 30, y = 65)             
+        self.input.place(height=25, width=200, x = 190, y = 72)              
+        self.input_1.place(height=25, width=200, x = 190, y = 95)  
+        self.change.place(height=25, width=120, x = 150, y = 145)            
+        self.userLabel.place(height=25, width=240, x = 80, y = 20)              
         self.exitBtn.place(height=25, width=120, x = 150, y = 200)
 
     def end(self):
@@ -605,6 +617,7 @@ class User:
         self.change.place_forget()
         self.userLabel.place_forget()
         self.exitBtn.place_forget()
+        self.input_1.place_forget()
 
 class About:
     window.title('Об авторе')
@@ -748,24 +761,41 @@ class CalendarWd:
         self.but.pack_forget()
         self.tkc.pack_forget()
         self.date.pack_forget()
-        self.tkobj.destroy()        
+        self.tkobj.destroy()   
+
+class Timeout:
+    label = Label(window,text='Правило 10: Задержка (3sec)', font=('Times Roman', 20), fg='black') 
+    def start(self):
+        self.label.pack()    
+
+    def end(self):
+        self.label.pack_forget()
 
 login_wd = Login()
-# login_wd.start()
+login_wd.start()
 user_wd = User()
 admin_wd = Admin()
-admin_wd.start()
+# admin_wd.start()
 addUser_wd = CreateUser()
 about_wd = About()
 userlist_wd = UserList()
 change = Change()
+timeout = Timeout()
+
 
 def handleLogin():
     login_val = login_wd.login.get()
     password = login_wd.password.get()
     res = login(login_val, password)
     if type(res) == str:
-        login_wd.setStatus(res)
+        if res == '400':
+            login_wd.end()
+            timeout.start()
+            time.sleep(3)
+            timeout.end()
+            login_wd.start()
+        else:
+            login_wd.setStatus(res)
     else:
         if res:
             login_wd.end()
@@ -782,9 +812,36 @@ def handleLogin():
 
 def handleChangePassword():
     password = user_wd.input.get()
+    password_1 = user_wd.input_1.get()
     login = user_wd.getLogin()
-    updateUser(login, 'password', password)
-    messagebox.showinfo("Change password", "Пароль изменен")
+    rules = getUser(login)['rules']
+    if '11' in rules:
+        messagebox.showwarning('','Правило 11: запрещено изменять пароль')
+        return
+    if password != password_1:
+        messagebox.showwarning('','Пароли не совпадают')
+        return
+    if len(password) < 6 or len(password) > 12:
+        messagebox.showwarning('','6 < Длина пароля <= 12')
+        return
+    if '2' in rules:
+        print('here')
+        res = checkRules(password, ['2'])
+        if not(res):
+            messagebox.showwarning('','Правило 2: Пароль должен содержать цифры, символы верхнего и нижнего регистра')
+            return
+    letters = 'qwertyuiopasdfghjklzxcvbnm1234567890'
+    incorrect = False
+    for char in password.lower():
+        if not(char in letters):
+            incorrect = True
+    if incorrect:
+        messagebox.showwarning('','Недопустимые символы')
+        return
+    else: 
+        updateUser(login, 'password', password)
+        messagebox.showinfo("Change password", "Пароль изменен")
+        return
 
 def handleUserExit():
     user_wd.end()
@@ -821,7 +878,6 @@ def handleAddRulesWdFromList(login):
         user = getUser(login)
         global rules_w
         rules_w = Rules('edit')
-        print(user['rules'])
         rules_w.start(user['rules'])
 
 def handleAddCalendar(mode):
@@ -830,7 +886,6 @@ def handleAddCalendar(mode):
     cal.start()
 
 def handleSaveDate(mode:str):
-    print(mode)
     date = cal.tkc.get_date()
     if not(date):
         cal.setCalLabel('Выберите дату')
@@ -895,7 +950,6 @@ def changeAdPassword():
         change.end()
         admin_wd.start()
         updateUser('ADMIN', 'password', newPass)
-
 
 
 def handleExitAdmin():

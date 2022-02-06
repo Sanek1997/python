@@ -19,7 +19,6 @@ def _setMockData():
 
 def _remapLineToDict(line:str):
     arr = line[:-1].split(delimiter)
-    print(arr)
     return {
         'login': arr[0],
         'password': arr[1],
@@ -55,7 +54,6 @@ def getData():
     users = []
     for line in f:
         if len(line.strip()):
-            print(line)
             users.append(_remapLineToDict(line))
     f.close()
     return users
@@ -68,7 +66,6 @@ def getUser(login:str):
     f.close()
 
 def updateUser(login, key, value):
-    print('event', login, key, value)
     f = open(fName, 'r')
     lines = f.readlines()
     f.close()
@@ -143,6 +140,19 @@ def deleteRule(login):
     f = open(rulesFName, 'w')
     f.writelines(newLines)
     f.close()
+
+def getRule(login):
+    f = open(rulesFName, 'r')
+    lines = f.readlines()
+    f.close()
+    out = {}
+    for line in lines:
+        user = line.split(delimiter)
+        if login == user[0]:
+            out =  _remapRulesToDict(user[1][:-1])
+    return out
+
+
 
 def createHistory(login, password):
     f = open(hisFName, 'a')

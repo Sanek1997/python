@@ -1,12 +1,30 @@
 from dataManager import *
+import datetime
 
 def login(login, password):
     user = getUser(login)
     if user:
         if user['status'] == 'blocked':
             return 'Пользователь заблокирован'
+        if '4' in user['rules']:
+            currentDate = datetime.datetime.now()
+            rules = getRule(login)
+            arr = rules['psdead'].split('-')
+            arr = list(map(int, arr))
+            deadDate = datetime.datetime(year=arr[0], month=arr[1], day=arr[2])
+            dif = deadDate - currentDate
+            if dif.total_seconds() < 0:
+                return 'Срок действия пароля истек'
+        if '8' in user['rules']:
+            rules = getRule(login)['psTry']
+            psTry = int(rules) - 1 
+            if rules == '0':
+                return 'Вы потратили все попытки(5) по правилу 8'
+            addToRule(login, 'psTry', str(psTry))
         if user['password'] == password:
             return True
+        if '10' in user['rules']:
+            return '400'
         return False
     return 'Пользователь не найден'
     

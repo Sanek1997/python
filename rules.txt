@@ -1,3 +1,5 @@
-deniko::psdead=2022-02-10
+deniko::psTry=0
 asdqwdlqkjwd::
-dimon::psdead=2022-02-16,psTry=5
+dimon::psdead=2022-02-16,psTry=0
+danya::
+testuser::psdead=2022-02-17,psTry=4
