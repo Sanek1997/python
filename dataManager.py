@@ -1,3 +1,4 @@
+from operator import add
 from turtle import update
 from venv import create
 
@@ -72,6 +73,8 @@ def updateUser(login, key, value):
     update = open(fName, 'w')
     newLines = list(map(lambda line: _update(line, login, key, value), lines))
     update.writelines(newLines)
+    if key == 'password':
+        addPassToHistory(login, value)
     f.close()
 
 def addUser(login, password, rules:list):
@@ -187,3 +190,12 @@ def deleteHistory(login):
     f = open(hisFName, 'w')
     f.writelines(newLines)
     f.close()
+
+def getHistory(login):
+    f = open(hisFName, 'r')
+    lines = f.readlines()
+    f.close()
+    for line in lines:
+        user = line.split(delimiter)
+        if login == user[0]:
+            return user[1][:-1].split(',')

@@ -830,6 +830,12 @@ def handleChangePassword():
         if not(res):
             messagebox.showwarning('','Правило 2: Пароль должен содержать цифры, символы верхнего и нижнего регистра')
             return
+    if '6' in rules:
+        history  = getHistory(login)
+        print(history)
+        if password in history:
+            messagebox.showwarning('','Пароль уже использовался')
+            return
     letters = 'qwertyuiopasdfghjklzxcvbnm1234567890'
     incorrect = False
     for char in password.lower():
@@ -838,7 +844,9 @@ def handleChangePassword():
     if incorrect:
         messagebox.showwarning('','Недопустимые символы')
         return
-    else: 
+    else:
+        user_wd.input.delete(0, END)
+        user_wd.input_1.delete(0, END)
         updateUser(login, 'password', password)
         messagebox.showinfo("Change password", "Пароль изменен")
         return
