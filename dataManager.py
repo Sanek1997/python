@@ -155,8 +155,6 @@ def getRule(login):
             out =  _remapRulesToDict(user[1][:-1])
     return out
 
-
-
 def createHistory(login, password):
     f = open(hisFName, 'a')
     line = login+delimiter+password+'\n'
