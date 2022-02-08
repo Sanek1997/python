@@ -1,5 +1,6 @@
 from dataManager import *
 import datetime
+import random
 
 def login(login, password):
     user = getUser(login)
@@ -54,3 +55,19 @@ def checkRules(password:str, rules:list):
             hasLowerCase = password != password.upper()
             hasDigit = any(map(str.isdigit, password))
             return all([hasUpperCase, hasLowerCase, hasDigit])
+
+def handleGeneratePass():
+    n = 10 # Длина пароля
+    letters = 'qwertyuiopasdfghjklzxcvbnm'
+    password = ''
+    for n in range(1, n):
+        randChar = letters[random.randint(0, len(letters)-1)]
+        password += randChar
+    upper = letters.upper()
+    password = upper[random.randint(0, len(upper)-1)] + password
+    for n in range(1, 3):
+        password += str(random.randint(0, 9))
+    return password
+    
+
+handleGeneratePass()

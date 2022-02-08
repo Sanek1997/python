@@ -612,6 +612,7 @@ class User:
         self.exitBtn.place(height=25, width=120, x = 150, y = 200)
 
     def end(self):
+        self.psLabel_1.place_forget()
         self.psLabel.place_forget()
         self.input.place_forget()
         self.change.place_forget()
@@ -619,6 +620,54 @@ class User:
         self.exitBtn.place_forget()
         self.input_1.place_forget()
         self.psLabel_1.place_forget()
+
+class GeneratePass:
+    def __init__(self) -> None:
+        self.user = ''
+
+    psLabel=Label(
+        text='Правило 11: Запрещено изменять пароль ',
+        background='#00FF7F',
+        activebackground='#00FF7F',
+        justify=CENTER,
+        font=('Times Roman', 12),
+        fg='black'
+    )
+
+    genBtn= Button(
+        text='Сгенерировать',
+        background='#00CED1',
+        activebackground='#00CED1',
+        width='22',
+        padx='0',
+        pady='0',
+        font=('Times Roman', 12, 'bold'),
+        command=lambda: handleCreatePass()
+    )
+
+    exitBtn = Button(
+        text='Выход',
+        background='#00CED1',
+        activebackground='#00CED1',
+        width='22',
+        padx='0',
+        pady='0',
+        font=('Times Roman', 12, 'bold'),
+        command=lambda: handleExitGen()
+    )
+
+
+
+    def start(self, user):
+        self.user = user
+        self.psLabel.place(height=30, width=400, x = 30, y = 25)  
+        self.genBtn.place(height=25, width=120, x = 150, y = 100)
+    
+    def end(self):
+        self.genBtn.place_forget()
+        self.psLabel.place_forget()
+    
+
 
 class About:
     window.title('Об авторе')
@@ -782,6 +831,7 @@ about_wd = About()
 userlist_wd = UserList()
 change = Change()
 timeout = Timeout()
+gen = GeneratePass()
 
 
 def handleLogin():
@@ -803,7 +853,11 @@ def handleLogin():
             if login_val == 'ADMIN':
                 admin_wd.start()
             else:
-                user_wd.start(login_val)
+                data = getUser(login_val)
+                if '11' in data['rules']:
+                    gen.start(login_val)
+                else:
+                    user_wd.start(login_val)
         else:
             count = login_wd.psTryFn()
             if count == 0:
@@ -960,6 +1014,15 @@ def changeAdPassword():
         admin_wd.start()
         updateUser('ADMIN', 'password', newPass)
 
+def handleCreatePass():
+    passw = handleGeneratePass()
+    user = gen.user
+    messagebox.showinfo('Новый пароль', 'Новый пароль: ' + passw)
+    updateUser(user, 'password', passw)
+
+def handleExitGen():
+    gen.end()
+    login_wd.start()
 
 def handleExitAdmin():
     admin_wd.end()
@@ -989,7 +1052,6 @@ def handleAddChangeAdminPassword():
     admin_wd.end()
     change.start()
 
-    
 mainloop()
 
     
