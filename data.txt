@@ -1,6 +1,9 @@
-ADMIN::password::active::
-deniko::asddwdw::active::6-10-8
+ADMIN::123456::active::
+deniko::qwertylan::active::11
 asdqwdlqkjwd::dqwdqwdqwd::active::
-dimon::akjsdlkwqdWOIU123::active::2-10-4-8-11
-danya::::active::
-testuser::passworD2::active::2-6-10-4-8
+dimon::akjsdlkwqdWOIU123::active::
+danya::qwertylakn::active::
+Ruslan1999::Ruslan999999::blocked::10
+Ruslan::qwertylan::active::6
+dimon1997::qwertylan::active::
+dimon220055::qwerty::active::6

@@ -618,13 +618,14 @@ class User:
         self.userLabel.place_forget()
         self.exitBtn.place_forget()
         self.input_1.place_forget()
+        self.psLabel_1.place_forget()
 
 class About:
     window.title('Об авторе')
-    aboutLabel=Label(text='Автор: ',
+    aboutLabel=Label(text='Авторы: ',
         background='#00FF7F',
         activebackground='#00FF7F',
-        justify=CENTER,
+        justify=LEFT,
         font=('Times Roman', 16, 'bold'),
         fg='red'
     )
@@ -635,11 +636,11 @@ class About:
         font=('Times Roman', 16, 'bold'),
         fg='red'
     )
-    authorLabel=Label(text='студент группы ИВТ-41 \rЛаптандер Александр Михайлович ',
+    authorLabel=Label(text='студенты группы ИВТ-41 \rЛаптандер Александр\r Замятин Илья\r Черняков Антон\r',
         background='#00FF7F',
         activebackground='#00FF7F',
         justify=LEFT,
-        font=('Times Roman', 15),
+        font=('Times Roman', 16),
         fg='black'
     )
     taskLabel=Label(text='Разработать программу, реализующую \r интерфейсную систему с применением \r механизмов парольной защиты ',
@@ -661,10 +662,10 @@ class About:
     )
 
     def start(self):
-        self.aboutLabel.place(height=40, width=400, x = 20, y = 0)                # автор
-        self.tasktitle.place(height=80, width=400, x = 20, y = 70)               # задание
-        self.authorLabel.place(height=50, width=400, x = 30, y = 35)               # студент группы ИВТ-41 \rЛаптандер Александр Михайлович
-        self.taskLabel.place(height=70, width=400, x = 10, y = 125)              # разработать программу, реализующую интерфейсную систему с применением механизмов парольной защиты
+        self.aboutLabel.place(height=30, width=150, x = 15, y = 0)                # авторы
+        self.tasktitle.place(height=40, width=450, x = 10, y = 91)               # задание
+        self.authorLabel.place(height=100, width=250, x = 150, y = 0)               # студент группы ИВТ-41 \rЛаптандер Александр Михайлович
+        self.taskLabel.place(height=80, width=400, x = 10, y = 120)              # разработать программу, реализующую интерфейсную систему с применением механизмов парольной защиты
         self.exitBtn.place(height=30, width=70, x = 180, y = 210) 
 
     def end(self):
