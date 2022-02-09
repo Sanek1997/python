@@ -197,3 +197,15 @@ def getHistory(login):
         user = line.split(delimiter)
         if login == user[0]:
             return user[1][:-1].split(',')
+
+def getHistoryExist(login):
+    f = open(hisFName, 'r')
+    lines = f.readlines()
+    f.close()
+    find = False
+    for line in lines:
+        user = line.split(delimiter)
+        print(line)
+        if login == user[0]:
+            find = True
+    return find

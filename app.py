@@ -923,10 +923,12 @@ def handleSaveRules(rules:list, mode):
     else:
         user = getUser(userlist_wd.getLogin())
         updateUser(userlist_wd.getLogin(), 'rules', rules) 
-        if ('6' in rules) and (not('6' in user['rules'])):
-            createHistory(user['login'], user['password'])
-        elif not('6' in rules) and ('6' in user['rules']):
-            deleteHistory(user['login'])
+        if ('6' in rules):
+            exist  = getHistoryExist(userlist_wd.users[userlist_wd.index]['login'])
+            print(exist)
+            if not(exist):
+                createHistory(user['login'], user['password'])
+            
         if '8' in rules: 
             addToRule(user['login'], 'psTry', '5')
         rules_w.end()
