@@ -69,5 +69,3 @@ def handleGeneratePass():
         password += str(random.randint(0, 9))
     return password
     
-
-handleGeneratePass()
