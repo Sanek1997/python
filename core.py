@@ -55,7 +55,7 @@ def checkRules(password:str, rules:list):
             hasLowerCase = password != password.upper()
             hasDigit = any(map(str.isdigit, password))
             return all([hasUpperCase, hasLowerCase, hasDigit])
-
+#
 def handleGeneratePass():
     n = 10 # Длина пароля
     letters = 'qwertyuiopasdfghjklzxcvbnm'
